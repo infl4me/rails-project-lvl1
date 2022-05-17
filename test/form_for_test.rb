@@ -17,11 +17,10 @@ class FormForTest < Minitest::Test
     result = HexletCode.form_for user do |f|
       f.input :name
       f.input :job, as: :text
+      f.submit
     end
 
-    expected = '<form action="#" method="post">'\
-               '<input name="name" type="text" value="rob">'\
-               '<textarea cols="20" rows="40" name="job">hexlet</textarea></form>'
+    expected = File.read(File.join(__dir__, 'fixtures', 'form.html'))
 
     assert_equal(expected, result)
   end

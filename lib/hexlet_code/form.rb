@@ -3,38 +3,30 @@
 module HexletCode
   User = Struct.new(:name, :job, :gender, keyword_init: true)
 
-  #
-  # generates form
-  #
-  # @param [User] user user
-  # @param [Hash] params params
-  #
-  # @return [String] form
-  #
-  def self.form_for(user, params = {}, &block)
-    attribs = { action: params[:url] || '#', method: 'post' }
-    Tag.build('form', attribs) { build_fields(user, &block).join }
+  def self.form_for(user, params = {})
+    fields = if block_given?
+               form_fields_collector = FormFieldsCollector.new(user)
+               yield(form_fields_collector)
+               form_fields_collector.fields
+             else
+               []
+             end
+
+    form_attribs = { action: params[:url] || '#', method: 'post' }
+    Tag.build('form', form_attribs) { convert_fields_to_html(fields) }
   end
 
-  #
-  # builds fields collected by FormFieldsCollector
-  #
-  # @param [User] user user
-  #
-  # @return [Array<String>] fields
-  #
-  def self.build_fields(user)
-    return [] unless block_given?
+  def self.convert_fields_to_html(fields)
+    stringified_fields = fields.map do |field|
+      tag = if field[:nested]
+              Tag.build(field[:type], field[:attributes]) { (field[:body]).to_s }
+            else
+              Tag.build(field[:type], field[:attributes])
+            end
+      "  #{tag}"
+    end.join("\n")
 
-    form_fields_collector = FormFieldsCollector.new(user)
-    yield(form_fields_collector)
-    form_fields_collector.fields.map do |field|
-      if field[:nested]
-        Tag.build(field[:type], field[:attributes]) { field[:body] }
-      else
-        Tag.build(field[:type], field[:attributes])
-      end
-    end
+    stringified_fields.empty? ? '' : "\n#{stringified_fields}\n"
   end
 
   class FormFieldsCollector
@@ -45,27 +37,30 @@ module HexletCode
       @fields = []
     end
 
-    #
-    # generates input tag
-    #
-    # @param [String] name value of name attribute
-    # @param [Hash] params params
-    #
-    # @return [String] input
-    #
+    def label(name)
+      @fields << {
+        type: 'label',
+        attributes: { for: name },
+        nested: true,
+        body: name.capitalize
+      }
+    end
+
     def input(name, params = {})
       return textarea(name) if params[:as] == :text
 
-      field = {
+      label(name)
+
+      @fields << {
         type: 'input',
         attributes: { name: name, type: 'text', value: @entity.public_send(name) }
       }
-
-      @fields << field
     end
 
     def textarea(name)
-      field = {
+      label(name)
+
+      @fields << {
         type: 'textarea',
         attributes: {
           cols: 20,
@@ -75,17 +70,13 @@ module HexletCode
         nested: true,
         body: @entity.public_send(name)
       }
-
-      @fields << field
     end
 
     def submit(value = 'Save')
-      field = {
+      @fields << {
         type: 'input',
-        attributes: { type: 'input', name: 'commit', value: value }
+        attributes: { type: 'submit', value: value }
       }
-
-      @fields << field
     end
   end
 end
