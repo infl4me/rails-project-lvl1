@@ -1,14 +1,14 @@
-AllCops:
-  NewCops: enable
+---
+
+require:
+  - rubocop-performance
+  - rubocop-minitest
+  - rubocop-performance
+  - rubocop-rake
 
 Style/Documentation:
   Enabled: false
 
-Gemspec/RequiredRubyVersion:
-  Enabled: false
-
-Metrics/MethodLength:
-  Enabled: false
-
-Metrics/AbcSize:
-  Enabled: false
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.0

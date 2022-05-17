@@ -7,7 +7,7 @@ module HexletCode
 
   class Tag
     #
-    # transforms hash of attributes to string
+    # transforms hash of attributes into the string
     #
     # @param [Hash] attributes attributes
     #

@@ -8,16 +8,10 @@ class HexletCodeTest < Minitest::Test
   end
 
   def test_it_builds_single_tage
-    assert_equal(HexletCode::Tag.build('br'), '<br>')
+    assert_equal('<br>', HexletCode::Tag.build('br'))
 
-    assert_equal(
-      HexletCode::Tag.build('img', src: 'path/to/image'),
-      '<img src="path/to/image">'
-    )
+    assert_equal('<img src="path/to/image">', HexletCode::Tag.build('img', src: 'path/to/image'))
 
-    assert_equal(
-      HexletCode::Tag.build('input', type: 'submit', value: 'Save'),
-      '<input type="submit" value="Save">'
-    )
+    assert_equal('<input type="submit" value="Save">', HexletCode::Tag.build('input', type: 'submit', value: 'Save'))
   end
 end
