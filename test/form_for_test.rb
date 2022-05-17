@@ -3,13 +3,26 @@
 require 'test_helper'
 
 class FormForTest < Minitest::Test
-  @user = HexletCode::User.new name: 'rob'
+  def test_it_builds_basic_form
+    user = HexletCode::User.new name: 'rob'
+    result = HexletCode.form_for user
+    assert_equal('<form action="#" method="post"></form>', result)
 
-  def test_it_builds_form
-    result = HexletCode.form_for @user
-    assert_equal("<form action=\"#\" method=\"post\">\n</form>", result)
+    result = HexletCode.form_for user, url: '/users'
+    assert_equal('<form action="/users" method="post"></form>', result)
+  end
 
-    result = HexletCode.form_for @user, url: '/users'
-    assert_equal("<form action=\"/users\" method=\"post\">\n</form>", result)
+  def test_it_builds_form_with_block
+    user = HexletCode::User.new name: 'rob', job: 'hexlet', gender: 'm'
+    result = HexletCode.form_for user do |f|
+      f.input :name
+      f.input :job, as: :text
+    end
+
+    expected = '<form action="#" method="post">'\
+               '<input name="name" type="text" value="rob">'\
+               '<textarea cols="20" rows="40" name="job">hexlet</textarea></form>'
+
+    assert_equal(expected, result)
   end
 end
