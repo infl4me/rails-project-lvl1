@@ -3,15 +3,17 @@
 require 'test_helper'
 
 class HexletCodeTest < Minitest::Test
+  @user = HexletCode::User.new name: 'rob'
+
   def test_that_it_has_a_version_number
     refute_nil ::HexletCode::VERSION
   end
 
-  def test_it_builds_single_tage
-    assert_equal('<br>', HexletCode::Tag.build('br'))
+  def test_it_builds_form
+    result = HexletCode.form_for @user
+    assert_equal("<form action=\"#\" method=\"post\">\n</form>", result)
 
-    assert_equal('<img src="path/to/image">', HexletCode::Tag.build('img', src: 'path/to/image'))
-
-    assert_equal('<input type="submit" value="Save">', HexletCode::Tag.build('input', type: 'submit', value: 'Save'))
+    result = HexletCode.form_for @user, url: '/users'
+    assert_equal("<form action=\"/users\" method=\"post\">\n</form>", result)
   end
 end
