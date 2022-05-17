@@ -15,8 +15,8 @@ class FormForTest < Minitest::Test
   def test_it_builds_form_with_block
     user = HexletCode::User.new name: 'rob', job: 'hexlet', gender: 'm'
     result = HexletCode.form_for user do |f|
-      f.input :name
-      f.input :job, as: :text
+      f.input :name, class: 'user-input'
+      f.input :job, as: :text, cols: 20, rows: 40
       f.submit
     end
 

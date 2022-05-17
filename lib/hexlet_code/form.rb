@@ -46,29 +46,35 @@ module HexletCode
       }
     end
 
+    def extract_attributes_from_params(params = {})
+      params.reject { |key| key == :as }
+    end
+
     def input(name, params = {})
-      return textarea(name) if params[:as] == :text
+      return textarea(name, extract_attributes_from_params(params)) if params[:as] == :text
 
       label(name)
 
       @fields << {
         type: 'input',
-        attributes: { name: name, type: 'text', value: @entity.public_send(name) }
+        attributes: {
+          name: name,
+          type: 'text',
+          value: @entity.public_send(name)
+        }.merge(extract_attributes_from_params(params))
       }
     end
 
-    def textarea(name)
+    def textarea(name, params = {})
       label(name)
 
       @fields << {
         type: 'textarea',
-        attributes: {
-          cols: 20,
-          rows: 40,
-          name: name
-        },
         nested: true,
-        body: @entity.public_send(name)
+        body: @entity.public_send(name),
+        attributes: {
+          name: name
+        }.merge(extract_attributes_from_params(params))
       }
     end
 
