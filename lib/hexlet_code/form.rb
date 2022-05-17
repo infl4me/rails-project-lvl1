@@ -12,10 +12,8 @@ module HexletCode
   # @return [String] form
   #
   def self.form_for(user, params = {}, &block)
-    fields = block ? build_fields(user, &block) : []
-
     attribs = { action: params[:url] || '#', method: 'post' }
-    Tag.build('form', attribs) { fields.join }
+    Tag.build('form', attribs) { build_fields(user, &block).join }
   end
 
   #
@@ -26,14 +24,16 @@ module HexletCode
   # @return [Array<String>] fields
   #
   def self.build_fields(user)
+    return [] unless block_given?
+
     form_fields_collector = FormFieldsCollector.new
     yield(form_fields_collector)
     form_fields_collector.fields.map do |field|
       case field[:params][:as]
       when :text
-        Tag.build('textarea', { cols: 20, rows: 40, name: field[:name] }) { user[field[:name]] }
+        Tag.build('textarea', { cols: 20, rows: 40, name: field[:name] }) { user.public_send(field[:name]) }
       when :input
-        Tag.build('input', { name: field[:name], type: 'text', value: user[field[:name]] })
+        Tag.build('input', { name: field[:name], type: 'text', value: user.public_send(field[:name]) })
       end
     end
   end

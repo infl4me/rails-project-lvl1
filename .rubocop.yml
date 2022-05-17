@@ -9,6 +9,9 @@ require:
 Style/Documentation:
   Enabled: false
 
+Metrics/MethodLength:
+  Enabled: false
+
 AllCops:
   NewCops: enable
   TargetRubyVersion: 3.0
