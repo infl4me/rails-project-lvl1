@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
-
-class HexletCodeTest < Minitest::Test
+class TagTest < Minitest::Test
   def test_it_builds_single_tage
     assert_equal('<br>', HexletCode::Tag.build('br'))
 
