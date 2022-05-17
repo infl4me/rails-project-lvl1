@@ -19,7 +19,7 @@ module HexletCode
   def self.convert_fields_to_html(fields)
     stringified_fields = fields.map do |field|
       tag = if field[:nested]
-              Tag.build(field[:type], field[:attributes]) { (field[:body]).to_s }
+              Tag.build(field[:type], field[:attributes]) { (field[:body]) }
             else
               Tag.build(field[:type], field[:attributes])
             end
@@ -37,6 +37,10 @@ module HexletCode
       @fields = []
     end
 
+    def extract_attributes_from_params(params = {})
+      params.reject { |key| key == :as }
+    end
+
     def label(name)
       @fields << {
         type: 'label',
@@ -44,10 +48,6 @@ module HexletCode
         nested: true,
         body: name.capitalize
       }
-    end
-
-    def extract_attributes_from_params(params = {})
-      params.reject { |key| key == :as }
     end
 
     def input(name, params = {})
