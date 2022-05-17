@@ -26,14 +26,13 @@ module HexletCode
   def self.build_fields(user)
     return [] unless block_given?
 
-    form_fields_collector = FormFieldsCollector.new
+    form_fields_collector = FormFieldsCollector.new(user)
     yield(form_fields_collector)
     form_fields_collector.fields.map do |field|
-      case field[:params][:as]
-      when :text
-        Tag.build('textarea', { cols: 20, rows: 40, name: field[:name] }) { user.public_send(field[:name]) }
-      when :input
-        Tag.build('input', { name: field[:name], type: 'text', value: user.public_send(field[:name]) })
+      if field[:nested]
+        Tag.build(field[:type], field[:attributes]) { field[:body] }
+      else
+        Tag.build(field[:type], field[:attributes])
       end
     end
   end
@@ -41,7 +40,8 @@ module HexletCode
   class FormFieldsCollector
     attr_reader :fields
 
-    def initialize
+    def initialize(entity)
+      @entity = entity
       @fields = []
     end
 
@@ -53,8 +53,39 @@ module HexletCode
     #
     # @return [String] input
     #
-    def input(name, params = { as: :input })
-      @fields << { name: name, params: params }
+    def input(name, params = {})
+      return textarea(name) if params[:as] == :text
+
+      field = {
+        type: 'input',
+        attributes: { name: name, type: 'text', value: @entity.public_send(name) }
+      }
+
+      @fields << field
+    end
+
+    def textarea(name)
+      field = {
+        type: 'textarea',
+        attributes: {
+          cols: 20,
+          rows: 40,
+          name: name
+        },
+        nested: true,
+        body: @entity.public_send(name)
+      }
+
+      @fields << field
+    end
+
+    def submit(value = 'Save')
+      field = {
+        type: 'input',
+        attributes: { type: 'input', name: 'commit', value: value }
+      }
+
+      @fields << field
     end
   end
 end
