@@ -7,7 +7,17 @@ class HexletCodeTest < Minitest::Test
     refute_nil ::HexletCode::VERSION
   end
 
-  def test_it_does_something_useful
-    assert false
+  def test_it_builds_single_tage
+    assert_equal(HexletCode::Tag.build('br'), '<br>')
+
+    assert_equal(
+      HexletCode::Tag.build('img', src: 'path/to/image'),
+      '<img src="path/to/image">'
+    )
+
+    assert_equal(
+      HexletCode::Tag.build('input', type: 'submit', value: 'Save'),
+      '<input type="submit" value="Save">'
+    )
   end
 end
