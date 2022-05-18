@@ -16,10 +16,7 @@ module HexletCode
     end
 
     def convert_fields_to_html(fields)
-      stringified_fields = fields.map do |field|
-        tag = Tag.build(field[:type], field[:attributes]) { field[:body] }
-        "  #{tag}"
-      end.join("\n")
+      stringified_fields = fields.map { |field| "  #{field.to_html}" }.join("\n")
 
       stringified_fields.empty? ? '' : "\n#{stringified_fields}\n"
     end

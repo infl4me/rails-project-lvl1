@@ -9,50 +9,30 @@ module HexletCode
       @fields = []
     end
 
-    def extract_attributes_from_params(params = {})
-      params.reject { |key| key == :as }
+    def insert(field)
+      @fields << field
     end
 
-    def label(name)
-      @fields << {
-        type: 'label',
-        attributes: { for: name },
-        body: name.capitalize
-      }
+    def label(name, params = {})
+      insert HexletCode::FormFields::Label.new(name, params)
     end
 
     def input(name, params = {})
-      return textarea(name, extract_attributes_from_params(params)) if params[:as] == :text
+      return textarea(name, params.reject { |key| key == :as }) if params[:as] == :text
 
       label(name)
 
-      @fields << {
-        type: 'input',
-        attributes: {
-          name: name,
-          type: 'text',
-          value: @model.public_send(name)
-        }.merge(extract_attributes_from_params(params))
-      }
+      insert HexletCode::FormFields::Input.new(name, @model.public_send(name), params)
     end
 
     def textarea(name, params = {})
       label(name)
 
-      @fields << {
-        type: 'textarea',
-        body: @model.public_send(name),
-        attributes: {
-          name: name
-        }.merge(extract_attributes_from_params(params))
-      }
+      insert HexletCode::FormFields::Textarea.new(name, @model.public_send(name), params)
     end
 
-    def submit(value = 'Save')
-      @fields << {
-        type: 'input',
-        attributes: { type: 'submit', value: value }
-      }
+    def submit(value = 'Save', params = {})
+      insert HexletCode::FormFields::Submit.new(value, params)
     end
   end
 end
