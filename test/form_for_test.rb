@@ -3,8 +3,10 @@
 require 'test_helper'
 
 class FormForTest < Minitest::Test
+  User = Struct.new(:name, :job, :gender, keyword_init: true)
+
   def test_it_builds_basic_form
-    user = HexletCode::User.new name: 'rob'
+    user = User.new name: 'rob'
     result = HexletCode.form_for user
     assert_equal('<form action="#" method="post"></form>', result)
 
@@ -13,7 +15,7 @@ class FormForTest < Minitest::Test
   end
 
   def test_it_builds_form_with_block
-    user = HexletCode::User.new name: 'rob', job: 'hexlet', gender: 'm'
+    user = User.new name: 'rob', job: 'hexlet', gender: 'm'
     result = HexletCode.form_for user do |f|
       f.input :name, class: 'user-input'
       f.input :job, as: :text, cols: 20, rows: 40
@@ -26,7 +28,7 @@ class FormForTest < Minitest::Test
   end
 
   def test_should_throw_if_undefined_field_specified
-    user = HexletCode::User.new name: 'rob', job: 'hexlet', gender: 'm'
+    user = User.new name: 'rob', job: 'hexlet', gender: 'm'
 
     assert_raises(StandardError) do
       HexletCode.form_for user, url: '/users' do |f|

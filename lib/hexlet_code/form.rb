@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
 module HexletCode
-  User = Struct.new(:name, :job, :gender, keyword_init: true)
-
-  def self.form_for(user, params = {})
+  def self.form_for(model, params = {})
     fields = if block_given?
-               form_fields_collector = FormFieldsCollector.new(user)
+               form_fields_collector = FormFieldsCollector.new(model)
                yield(form_fields_collector)
                form_fields_collector.fields
              else
@@ -32,8 +30,8 @@ module HexletCode
   class FormFieldsCollector
     attr_reader :fields
 
-    def initialize(entity)
-      @entity = entity
+    def initialize(model)
+      @model = model
       @fields = []
     end
 
@@ -60,7 +58,7 @@ module HexletCode
         attributes: {
           name: name,
           type: 'text',
-          value: @entity.public_send(name)
+          value: @model.public_send(name)
         }.merge(extract_attributes_from_params(params))
       }
     end
@@ -71,7 +69,7 @@ module HexletCode
       @fields << {
         type: 'textarea',
         nested: true,
-        body: @entity.public_send(name),
+        body: @model.public_send(name),
         attributes: {
           name: name
         }.merge(extract_attributes_from_params(params))
