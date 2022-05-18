@@ -17,11 +17,7 @@ module HexletCode
 
     def convert_fields_to_html(fields)
       stringified_fields = fields.map do |field|
-        tag = if field[:nested]
-                Tag.build(field[:type], field[:attributes]) { (field[:body]) }
-              else
-                Tag.build(field[:type], field[:attributes])
-              end
+        tag = Tag.build(field[:type], field[:attributes]) { field[:body] }
         "  #{tag}"
       end.join("\n")
 

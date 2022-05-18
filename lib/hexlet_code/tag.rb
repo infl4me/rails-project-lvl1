@@ -9,9 +9,12 @@ module HexletCode
     end
 
     def self.build(name, attributes = {})
-      return "<#{name}#{build_attributes(attributes)}>#{yield}</#{name}>" if block_given?
+      attributes = build_attributes(attributes)
+      body = yield if block_given?
+      
+      return "<#{name}#{attributes}>" if body.nil?
 
-      "<#{name}#{build_attributes(attributes)}>"
+      "<#{name}#{attributes}>#{body}</#{name}>"
     end
   end
 end

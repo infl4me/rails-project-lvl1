@@ -17,7 +17,6 @@ module HexletCode
       @fields << {
         type: 'label',
         attributes: { for: name },
-        nested: true,
         body: name.capitalize
       }
     end
@@ -42,7 +41,6 @@ module HexletCode
 
       @fields << {
         type: 'textarea',
-        nested: true,
         body: @model.public_send(name),
         attributes: {
           name: name
