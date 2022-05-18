@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class FormForTest < Minitest::Test
+class FormTest < Minitest::Test
   User = Struct.new(:name, :job, :gender, keyword_init: true)
 
   def test_it_builds_basic_form
