@@ -11,8 +11,8 @@ module HexletCode
                  []
                end
 
-      form_attribs = { action: params[:url] || '#', method: 'post' }
-      Tag.build('form', form_attribs) { convert_fields_to_html(fields) }
+      form_attributes = { action: params[:url] || '#', method: 'post' }
+      Tag.build('form', form_attributes) { convert_fields_to_html(fields) }
     end
 
     def convert_fields_to_html(fields)

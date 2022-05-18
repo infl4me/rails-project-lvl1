@@ -8,10 +8,10 @@ class FormTest < Minitest::Test
   def test_it_builds_basic_form
     user = User.new name: 'rob'
     result = HexletCode.form_for user
-    assert_equal('<form action="#" method="post"></form>', result)
+    assert_equal(TestHelper.read_fixture('form_minimal.html'), result)
 
     result = HexletCode.form_for user, url: '/users'
-    assert_equal('<form action="/users" method="post"></form>', result)
+    assert_equal(TestHelper.read_fixture('form_with_url.html'), result)
   end
 
   def test_it_builds_form_with_block
@@ -22,9 +22,7 @@ class FormTest < Minitest::Test
       f.submit
     end
 
-    expected = File.read(File.join(__dir__, 'fixtures', 'form.html'))
-
-    assert_equal(expected, result)
+    assert_equal(TestHelper.read_fixture('form.html'), result)
   end
 
   def test_should_throw_if_undefined_field_specified
