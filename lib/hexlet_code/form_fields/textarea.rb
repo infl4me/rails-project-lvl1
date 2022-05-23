@@ -3,7 +3,7 @@
 module HexletCode
   module FormFields
     class Textarea
-      include Printable
+      include Renderable
 
       def initialize(name, value, attributes = {})
         @name = 'textarea'

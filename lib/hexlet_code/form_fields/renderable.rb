@@ -2,10 +2,10 @@
 
 module HexletCode
   module FormFields
-    module Printable
+    module Renderable
       attr_reader :name, :attributes, :body
 
-      def to_html
+      def to_s
         HexletCode::Tag.build(@name, @attributes) { @body }
       end
     end

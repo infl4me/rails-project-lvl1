@@ -7,6 +7,6 @@ require 'minitest/autorun'
 
 module TestHelper
   def self.read_fixture(name)
-    File.read(File.join(__dir__, 'fixtures', name))
+    File.read(File.join(__dir__, 'fixtures', name)).delete("\n")
   end
 end

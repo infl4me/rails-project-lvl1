@@ -3,7 +3,7 @@
 module HexletCode
   module FormFields
     class Label
-      include Printable
+      include Renderable
 
       def initialize(name, attributes = {})
         @name = 'label'

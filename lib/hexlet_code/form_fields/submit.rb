@@ -3,7 +3,7 @@
 module HexletCode
   module FormFields
     class Submit
-      include Printable
+      include Renderable
 
       def initialize(value, attributes = {})
         @name = 'input'

@@ -10,11 +10,13 @@ module HexletCode
 
     def self.build(name, attributes = {})
       attributes = build_attributes(attributes)
+      open_tag = "<#{name}#{attributes}>"
+      close_tag = "</#{name}>"
       body = yield if block_given?
 
-      return "<#{name}#{attributes}>" if body.nil?
+      return open_tag if body.nil?
 
-      "<#{name}#{attributes}>#{body}</#{name}>"
+      "#{open_tag}#{body}#{close_tag}"
     end
   end
 end

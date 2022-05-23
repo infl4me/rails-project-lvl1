@@ -12,13 +12,7 @@ module HexletCode
                end
 
       form_attributes = { action: params[:url] || '#', method: 'post' }
-      Tag.build('form', form_attributes) { convert_fields_to_html(fields) }
-    end
-
-    def convert_fields_to_html(fields)
-      stringified_fields = fields.map { |field| "  #{field.to_html}" }.join("\n")
-
-      stringified_fields.empty? ? '' : "\n#{stringified_fields}\n"
+      Tag.build('form', form_attributes) { fields.join }
     end
   end
 end
