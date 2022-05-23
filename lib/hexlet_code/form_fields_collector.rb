@@ -4,6 +4,13 @@ module HexletCode
   class FormFieldsCollector
     attr_reader :fields
 
+    CLASS_MAPPING = {
+      input: 'HexletCode::FormFields::Input',
+      submit: 'HexletCode::FormFields::Submit',
+      text: 'HexletCode::FormFields::Textarea',
+      label: 'HexletCode::FormFields::Label'
+    }.freeze
+
     def initialize(model)
       @model = model
       @fields = []
@@ -13,26 +20,20 @@ module HexletCode
       @fields << field
     end
 
-    def label(name, params = {})
-      insert HexletCode::FormFields::Label.new(name, params)
+    def respond_to_missing?(_)
+      true
     end
 
-    def input(name, params = {})
-      return textarea(name, params.reject { |key| key == :as }) if params[:as] == :text
+    def method_missing(method_name, value = nil, params = {})
+      field_name = CLASS_MAPPING[params[:as]] || CLASS_MAPPING[method_name]
 
-      label(name)
+      raise "Unknown field: #{method_name}" if field_name.nil?
 
-      insert HexletCode::FormFields::Input.new(name, @model.public_send(name), params)
-    end
+      new_args = [@model, value, params.reject { |key| key == :as }]
 
-    def textarea(name, params = {})
-      label(name)
-
-      insert HexletCode::FormFields::Textarea.new(name, @model.public_send(name), params)
-    end
-
-    def submit(value = 'Save', params = {})
-      insert HexletCode::FormFields::Submit.new(value, params)
+      field = Object.const_get(field_name).new(new_args)
+      insert  HexletCode::FormFields::Label.new(new_args) if field.has_label
+      insert field
     end
   end
 end

@@ -5,12 +5,14 @@ module HexletCode
     class Textarea
       include Renderable
 
-      def initialize(name, value, attributes = {})
+      def initialize(args)
+        model, property, attributes = args
         @name = 'textarea'
+        @has_label = true
         @attributes = {
-          name: name
+          name: property
         }.merge(attributes)
-        @body = value
+        @body = model.public_send(property)
       end
     end
   end

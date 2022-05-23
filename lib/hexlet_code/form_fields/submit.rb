@@ -5,12 +5,13 @@ module HexletCode
     class Submit
       include Renderable
 
-      def initialize(value, attributes = {})
+      def initialize(args)
+        _, value, attributes = args
         @name = 'input'
         @attributes = {
           type: 'submit',
-          value: value
-        }.merge(attributes)
+          value: value || 'Save'
+        }.merge(attributes || {})
       end
     end
   end
