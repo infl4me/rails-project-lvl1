@@ -5,14 +5,12 @@ module HexletCode
     class Label
       include Renderable
 
-      def initialize(args)
-        _, property = args
-
+      def initialize(name)
         @name = 'label'
         @attributes = {
-          for: property
+          for: name
         }
-        @body = property.capitalize
+        @body = name.capitalize
       end
     end
   end

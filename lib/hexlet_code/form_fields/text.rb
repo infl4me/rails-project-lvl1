@@ -2,17 +2,15 @@
 
 module HexletCode
   module FormFields
-    class Textarea
+    class Text
       include Renderable
 
-      def initialize(args)
-        model, property, attributes = args
+      def initialize(name, value, attributes = {})
         @name = 'textarea'
-        @has_label = true
         @attributes = {
-          name: property
+          name: name
         }.merge(attributes)
-        @body = model.public_send(property)
+        @body = value
       end
     end
   end

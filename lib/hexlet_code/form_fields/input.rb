@@ -5,16 +5,13 @@ module HexletCode
     class Input
       include Renderable
 
-      def initialize(args)
-        model, property, attributes = args
-
+      def initialize(name, value, attributes = {})
         @name = 'input'
-        @has_label = true
         @attributes = {
-          name: property,
+          name: name,
           type: 'text',
-          value: model.public_send(property)
-        }.merge(attributes || {})
+          value: value
+        }.merge(attributes)
       end
     end
   end
